@@ -16,6 +16,10 @@ app.get("/api/", (req, res) => {
 	res.send("WELCOME !!!");
 });
 
+app.get("/api/hi", (req, res) => {
+	res.send("Hello Ozodbek !!!");
+});
+
 try {
 	app.post("/api/login", (req, res) => {
 		try {
