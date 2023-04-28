@@ -8,17 +8,17 @@ export class User {
   @Prop({ required: true })
   username: string;
 
-  @Prop({ required: true })
+  @Prop()
   first_name: string;
 
-  @Prop({ required: true })
+  @Prop()
   last_name: string;
 
   @Prop({ required: true })
   password: string;
 
   @Prop()
-  user_photo: number;
+  user_photo: string;
 
   @Prop({ required: true, default: false })
   is_admin: boolean;
