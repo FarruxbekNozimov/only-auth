@@ -48,7 +48,7 @@ export class AuthService {
     }
     const isMatchPass = await bcrypt.compare(password, user.password);
     if (!isMatchPass) {
-      throw new UnauthorizedException(`Admin not registered`);
+      throw new UnauthorizedException(`User not registered`);
     }
     const tokens = await this.getToken(user.id);
 
@@ -57,13 +57,13 @@ export class AuthService {
       token: hashed_refresh_token,
     });
 
-    res.cookie('refresh_token', tokens.refresh_token, {
+    res.cookie('token', tokens.refresh_token, {
       maxAge: 15 * 24 * 60 * 60 * 1000,
       httpOnly: true,
     });
 
     const response = {
-      message: 'ADMIN LOGIN',
+      message: 'USER LOGIN',
       user: updatedUser,
       tokens,
     };
@@ -80,7 +80,7 @@ export class AuthService {
     const updatedUser = await this.userService.update(userData.id, {
       token: refreshToken,
     });
-    res.clearCookie('refresh_token');
+    res.clearCookie('token');
     const response = {
       message: 'User logged out successfully',
       user: updatedUser,
@@ -125,5 +125,17 @@ export class AuthService {
     const updatedUser = await this.userService.update(user.id, {
       token: hashed_refresh_token,
     });
+    return updatedUser
+  }
+
+  async getUser(token: string, res: Response) {
+    const decodedToken = this.jwtService.verify(token["token"], {
+      secret: process.env.REFRESH_TOKEN_KEY,
+    });
+    const user = await this.userService.findOneById(`${decodedToken.id}`);
+    if (!user) {
+      throw new BadRequestException('user not found');
+    }
+    return user
   }
 }

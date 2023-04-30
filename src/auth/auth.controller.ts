@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpCode, Res, Param } from '@nestjs/common';
+import { Controller, Post, Body, HttpCode, Res, Param, Get } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login-user.dto';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
@@ -10,6 +10,13 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
+
+  @ApiOperation({ summary: 'Get User by token' })
+  @HttpCode(200)
+  @Post('getuser')
+  getUser(@Body() token: string, @Res({ passthrough: true }) res: Response) {
+    return this.authService.getUser(token, res);
+  }
 
   @ApiOperation({ summary: 'Register user' })
   @Post('register')
@@ -28,7 +35,7 @@ export class AuthController {
   @HttpCode(200)
   @Post('logout')
   logout(
-    @CookieGetter('refresh_token') refreshToken: string,
+    @CookieGetter('token') refreshToken: string,
     @Res({ passthrough: true }) res: Response,
   ) {
     return this.authService.logout(refreshToken, res);
@@ -37,7 +44,7 @@ export class AuthController {
   @Post(':id/refresh')
   refresh(
     @Param('id') id: number,
-    @CookieGetter('refresh_token') refreshToken: string,
+    @CookieGetter('token') refreshToken: string,
     @Res({ passthrough: true }) res: Response,
   ) {
     return this.authService.refreshToken(+id, refreshToken, res);

@@ -16,7 +16,7 @@ export class UserService {
   }
 
   async findAll() {
-    return this.userModel.find().populate('tasks').exec();
+    return this.userModel.find().exec();
   }
 
   async findOneById(id: string) {
@@ -24,7 +24,7 @@ export class UserService {
   }
 
   async findOneUsername(username: string) {
-    return this.userModel.findOne({ username: username })
+    return this.userModel.findOne({ username: username }).exec()
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {

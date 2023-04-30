@@ -8,6 +8,9 @@ export class Task {
   @Prop({ required: true })
   task: string;
 
+  @Prop({ required: true })
+  user_id: string;
+
   @Prop({ required: true, default: false })
   is_checked: boolean;
 }
